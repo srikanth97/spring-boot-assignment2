@@ -1,4 +1,4 @@
-package com.stackroute.muzix;
+package com.stackroute.muzix.initialization;
 
 import com.stackroute.muzix.domain.Track;
 import com.stackroute.muzix.exception.TrackAlreadyExistsException;
@@ -9,7 +9,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Initialization implements ApplicationListener<ContextRefreshedEvent> {
+public class ApplicationListenerImpl implements ApplicationListener<ContextRefreshedEvent> {
     @Autowired
     private TrackService trackService;
 
@@ -17,8 +17,6 @@ public class Initialization implements ApplicationListener<ContextRefreshedEvent
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         try {
             trackService.saveTrack(new Track(1,"default","fbajsb"));
-            trackService.saveTrack(new Track(2,"default2","fbajsxkncb"));
-
         } catch (TrackAlreadyExistsException e) {
             e.printStackTrace();
         }
