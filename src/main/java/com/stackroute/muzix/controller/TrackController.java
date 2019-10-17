@@ -7,6 +7,7 @@ import com.stackroute.muzix.exception.TrackNotFoundException;
 import com.stackroute.muzix.service.TrackService;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,17 +20,15 @@ import java.util.Optional;
 @RequestMapping(value = "api/v1")
 public class TrackController {
 
-    TrackService trackService;
-
     @Autowired
-    public TrackController(TrackService trackService) {
-        this.trackService = trackService;
-    }
+    @Qualifier("trackServiceImpl")
+    TrackService trackServiceImpl;
+
 
     @PostMapping("track")
     public ResponseEntity<?> saveTrack(@RequestBody Track track) throws TrackAlreadyExistsException {
         ResponseEntity responseEntity;
-        trackService.saveTrack(track);
+        trackServiceImpl.saveTrack(track);
         responseEntity = new ResponseEntity("Succesfully created", HttpStatus.CREATED);
 //        try{
 //
@@ -45,7 +44,7 @@ public class TrackController {
     @GetMapping("track")
     public ResponseEntity<?> getTracks(){
         ResponseEntity responseEntity;
-        responseEntity = new ResponseEntity(trackService.getTracks(), HttpStatus.CREATED);
+        responseEntity = new ResponseEntity(trackServiceImpl.getTracks(), HttpStatus.CREATED);
 //        try{
 //            responseEntity = new ResponseEntity(trackService.getTracks(), HttpStatus.CREATED);
 //        }catch (Exception ex) {
@@ -57,10 +56,12 @@ public class TrackController {
     @PutMapping("track/{id}")
     public  ResponseEntity<?> updateTracks(@PathVariable(value = "id") int id,@Valid @RequestBody Track track) throws TrackNotFoundException, TrackAlreadyExistsException {
         ResponseEntity responseEntity;
-        Optional<Track> track1 = trackService.getTrackById(id);
+        Optional<Track> track1 = trackServiceImpl.getTrackById(id);
         track.setTrackId(id);
-        trackService.saveTrack(track);
-        responseEntity = new ResponseEntity(trackService.getTracks(), HttpStatus.CREATED);
+        System.out.println(track);
+        trackServiceImpl.update(track);
+
+        responseEntity = new ResponseEntity(trackServiceImpl.getTracks(), HttpStatus.CREATED);
         //        try{
 //            Optional<Track> track1 = trackService.getTrackById(id);
 //            track.setTrackId(id);
@@ -77,8 +78,8 @@ public class TrackController {
     @DeleteMapping("track/{id}")
     public ResponseEntity<?> deleteTracks(@PathVariable("id") int id) throws TrackNotFoundException {
         ResponseEntity responseEntity;
-        trackService.deleteTrack(id);
-        responseEntity = new ResponseEntity(trackService.getTracks(), HttpStatus.CREATED);
+        trackServiceImpl.deleteTrack(id);
+        responseEntity = new ResponseEntity(trackServiceImpl.getTracks(), HttpStatus.CREATED);
 //        try{
 //            trackService.deleteTrack(id);
 //            responseEntity = new ResponseEntity(trackService.getTracks(), HttpStatus.CREATED);
@@ -90,10 +91,11 @@ public class TrackController {
         return responseEntity;
     }
 
-    @PostMapping("track/{trackName}")
-    public ResponseEntity<?> trackByName(@PathVariable("trackName") String name) {
+    @GetMapping("track/{trackName}")
+    public ResponseEntity<?> trackByName(@PathVariable("trackName") String name) throws TrackNotFoundException {
         ResponseEntity responseEntity;
-        List<Track> users = trackService.trackByName(name);
+        List<Track> users = trackServiceImpl.trackByName(name);
+        System.out.println("hjbdkkhasfdlkj");
         responseEntity = new ResponseEntity(users, HttpStatus.CREATED);
 //        try{
 //            List<Track> users = trackService.trackByName(name);

@@ -15,10 +15,11 @@ public interface TrackService {
 
     public List<Track> getTracks();
 
+    public Track update(Track track);
 
     public boolean deleteTrack(int trackId) throws TrackNotFoundException;
 
     public Optional<Track> getTrackById(int id) throws TrackNotFoundException;
 
-    public List<Track> trackByName(String name);
+    public List<Track> trackByName(String name) throws TrackNotFoundException;
 }

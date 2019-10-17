@@ -16,7 +16,8 @@ public class GlobbalExecptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = {TrackNotFoundException.class})
-    protected ResponseEntity<?> handleTrackNotFoundException(TrackAlreadyExistsException ex){
+    protected ResponseEntity<?> handleTrackNotFoundException(TrackNotFoundException ex){
+        System.out.println(ex.getMessage());
         return new ResponseEntity<String>(ex.getMessage(), HttpStatus.CONFLICT);
     }
 
